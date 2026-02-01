@@ -13,15 +13,14 @@ const interval = setInterval(() => {
 
 function finishAd() {
   try {
-    // Notify extension (works because dashboard opened this tab)
-    window.opener?.postMessage(
-      { type: "STACKTABS_REWARDED_COMPLETE" },
-      "*"
+    chrome.runtime.sendMessage(
+      "odajcbggmlnpoejgaljeabfkfgppidia",
+      { action: "REWARDED_AD_COMPLETE" }
     );
   } catch (e) {}
 
-  // Close tab automatically
   setTimeout(() => {
     window.close();
   }, 500);
 }
+
