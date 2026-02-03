@@ -23,4 +23,3 @@ function finishAd() {
     window.close();
   }, 500);
 }
-
