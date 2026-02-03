@@ -1,25 +1,25 @@
 let seconds = 30;
-const span = document.querySelector("#timer span");
+  const status = document.getElementById("status");
+  const closeBtn = document.getElementById("closeBtn");
 
-const interval = setInterval(() => {
-  seconds--;
-  span.textContent = seconds;
+  const timer = setInterval(() => {
+    seconds--;
+    status.textContent = `Watch ${seconds}s to unlock`;
 
-  if (seconds <= 0) {
-    clearInterval(interval);
-    finishAd();
-  }
-}, 1000);
+    if (seconds <= 0) {
+      clearInterval(timer);
+      status.textContent = "You may now close the ad";
+      closeBtn.disabled = false;
+    }
+  }, 1000);
 
-function finishAd() {
-  try {
-    chrome.runtime.sendMessage(
-      "odajcbggmlnpoejgaljeabfkfgppidia",
-      { action: "REWARDED_AD_COMPLETE" }
-    );
-  } catch (e) {}
+  closeBtn.onclick = () => {
+    try {
+      chrome.runtime.sendMessage(
+        "odajcbggmlnpoejgaljeabfkfgppidia",
+        { action: "REWARDED_AD_COMPLETE" }
+      );
+    } catch (e) {}
 
-  setTimeout(() => {
     window.close();
-  }, 500);
-}
+  };
