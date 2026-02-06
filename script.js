@@ -1,44 +1,101 @@
+// ===============================
+// STACKTABS REWARDED AD SCRIPT
+// ===============================
+
 // ===== EXTENSION ID =====
 const EXTENSION_ID = "odajcbggmlnpoejgaljeabfkfgppidia";
 
-// ===== GET TOKEN FROM URL =====
+// ===== READ TOKEN =====
 const params = new URLSearchParams(location.search);
 const token = params.get("token");
 
-let seconds = 30;
+if (!token) {
+  console.error("Missing ad token");
+}
 
+// ===== DOM =====
 const status = document.getElementById("status");
 const closeBtn = document.getElementById("closeBtn");
 
-// hide close initially
+// ===== STATE =====
+let remainingSeconds = 30;
+let timer = null;
+let completed = false;
+
+// hide close button initially
 closeBtn.style.display = "none";
+status.textContent = "Watch 30 seconds to unlock";
 
-// ===== TIMER =====
-const timer = setInterval(() => {
-  seconds--;
+// ===============================
+// TIMER CONTROL
+// ===============================
+function startTimer() {
+  if (timer || completed) return;
 
-  status.textContent = `Please watch ${seconds}s`;
+  timer = setInterval(() => {
+    remainingSeconds--;
 
-  if (seconds <= 0) {
+    status.textContent = `Please watch ${remainingSeconds}s`;
+
+    if (remainingSeconds <= 0) {
+      completeAd();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timer) {
     clearInterval(timer);
-
-    status.textContent = "Ad completed. You may close this page.";
-    closeBtn.style.display = "block";
-
-    // ⭐ THIS IS FIX-6
-    chrome.runtime.sendMessage(
-      EXTENSION_ID,
-      {
-        action: "REWARDED_AD_COMPLETED",
-        token
-      }
-    );
+    timer = null;
   }
+}
 
-}, 1000);
+// ===============================
+// COMPLETE AD
+// ===============================
+function completeAd() {
+  if (completed) return;
 
+  completed = true;
+  stopTimer();
 
-// ===== CLOSE BUTTON =====
+  status.textContent = "Ad completed. You may close this page.";
+  closeBtn.style.display = "block";
+
+  // 🔑 Notify extension (ONLY ONCE)
+  chrome.runtime.sendMessage(
+    EXTENSION_ID,
+    {
+      action: "REWARDED_AD_COMPLETED",
+      token
+    },
+    () => {
+      // ignore response
+    }
+  );
+}
+
+// ===============================
+// VISIBILITY HANDLING
+// ===============================
+// Pause timer when user switches tabs / minimizes / changes window
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopTimer();
+  } else {
+    startTimer();
+  }
+});
+
+// ===============================
+// START INITIAL TIMER
+// ===============================
+startTimer();
+
+// ===============================
+// CLOSE BUTTON
+// ===============================
 closeBtn.onclick = () => {
+  // User can only close AFTER completion
   window.close();
 };
