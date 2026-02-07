@@ -66,7 +66,7 @@ function completeAd() {
   chrome.runtime.sendMessage(
     EXTENSION_ID,
     {
-      action: "REWARDED_AD_COMPLETED",
+      action: "REWARDED_AD_COMPLETE",
       token
     },
     () => {
