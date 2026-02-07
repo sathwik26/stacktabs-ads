@@ -96,6 +96,6 @@ startTimer();
 // CLOSE BUTTON
 // ===============================
 closeBtn.onclick = () => {
-  // User can only close AFTER completion
-  window.close();
+  window.location.href = `chrome-extension://${EXTENSION_ID}/dashboard/index.html?adComplete=${token}`;
 };
+
