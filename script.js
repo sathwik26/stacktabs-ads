@@ -100,7 +100,10 @@ closeBtn.onclick = () => {
     EXTENSION_ID,
     { action: "AD_CLOSE_REQUEST", token }
   );
+
+  setTimeout(() => window.close(), 300);
 };
+
 
 
 
