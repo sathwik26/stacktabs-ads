@@ -96,15 +96,11 @@ startTimer();
 // CLOSE BUTTON
 // ===============================
 closeBtn.onclick = () => {
-  // notify extension first
   chrome.runtime.sendMessage(
     EXTENSION_ID,
-    { action: "REWARDED_AD_COMPLETE", token },
-    () => {
-      // then redirect to dashboard
-      location.href = `chrome-extension://${EXTENSION_ID}/dashboard/index.html?adComplete=${token}`;
-    }
+    { action: "AD_CLOSE_REQUEST", token }
   );
 };
+
 
 
