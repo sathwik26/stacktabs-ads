@@ -66,7 +66,7 @@ function completeAd() {
   window.postMessage({
     source: "stacktabs-ad",
     action: "REWARDED_AD_COMPLETE",
-    token
+    token: token
   }, "*");
 }
 
