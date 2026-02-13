@@ -62,15 +62,14 @@ function completeAd() {
   status.textContent = "Ad completed. You may close this page.";
   closeBtn.style.display = "block";
 
-  // 🔑 Notify extension (ONLY ONCE)
-  if (window.opener) {
-    window.opener.postMessage({
-      source: "stacktabs-ad",
-      action: "REWARDED_AD_COMPLETE",
-      token: token
-    }, "*");
-  }
+  // Broadcast to ALL extension pages
+  window.postMessage({
+    source: "stacktabs-ad",
+    action: "REWARDED_AD_COMPLETE",
+    token
+  }, "*");
 }
+
 
 // ===============================
 // VISIBILITY HANDLING
