@@ -63,16 +63,13 @@ function completeAd() {
   closeBtn.style.display = "block";
 
   // 🔑 Notify extension (ONLY ONCE)
-  chrome.runtime.sendMessage(
-    EXTENSION_ID,
-    {
+  if (window.opener) {
+    window.opener.postMessage({
+      source: "stacktabs-ad",
       action: "REWARDED_AD_COMPLETE",
-      token
-    },
-    () => {
-      // ignore response
-    }
-  );
+      token: token
+    }, "*");
+  }
 }
 
 // ===============================
@@ -96,10 +93,14 @@ startTimer();
 // CLOSE BUTTON
 // ===============================
 closeBtn.onclick = () => {
-  chrome.runtime.sendMessage(
-    EXTENSION_ID,
-    { action: "AD_CLOSE_REQUEST", token }
-  );
+  if (window.opener) {
+    window.opener.postMessage({
+      source: "stacktabs-ad",
+      action: "AD_CLOSED"
+    }, "*");
+  }
+  window.close();
+
 
   setTimeout(() => window.close(), 300);
 };
